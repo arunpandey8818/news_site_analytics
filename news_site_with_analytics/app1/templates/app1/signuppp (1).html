@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %} {{block.super}} - Sign Up {% endblock %}
+
+{% block left_content %}
+    <img src="/static/image/social.jpg" width=500 height=500/> 
+{% endblock %}
+
+{% block right_content %}
+  <div style="padding: 0px 0px 0px 650px; margin-top: -460px;">
+    <h1 style="font-size: 40px;"> Create an account </h1>
+    <p style="font-size: 30px;"> It's free and always will be. </p> 
+
+    <form method="post" action="/social/sign-up/" >
+      {% csrf_token %}
+
+      <table style=" font-size:13px; color: red;">
+        <tr>
+	  <td> First Name: </td>
+	  <td> <input type="text" name="fname" /> </td>
+	</tr>
+
+	<tr>
+	  <td> Last Name: </td>
+	  <td> <input type="text" name="lname" /> </td>
+	</tr>
+
+	<tr>
+	  <td> Email Address: </td>
+	  <td> <input type="email" name="email" placeholder="Enter a valid email address"> </td>
+	</tr>
+
+	<tr>
+	  <td> Age: </td>
+	  <td> <input type="number" size="6" name="age" min="8" max="99" value="21"> </td>
+	</tr>
+
+	<tr>
+	  <td> User ID: </td>
+	  <td> <input type="text" name="name" placeholder=" Choose an unique User ID:" /> </td>
+	</tr>
+
+	<tr>
+	  <td> Password: </td>
+	  <td> <input type="text" name="password" /> </td>
+	</tr>
+
+	<tr>
+	  <td>Confirm Password: </td>
+	  <td> <input type="text" name="cpassword"  /> </td>
+	</tr>
+
+	<tr>
+	  <td>  </td>
+	  <td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <input type="submit" value="Create an account" />
+	</tr>
+
+      </table>
+      
+    </form>
+
+  </div>
+{% endblock %}
+
+

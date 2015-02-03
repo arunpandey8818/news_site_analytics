@@ -1,0 +1,225 @@
+from django.http import HttpResponseRedirect
+from django.template import RequestContext
+from django.shortcuts import render_to_response, get_object_or_404,render
+
+from app1.models import *
+from django.db.models import Count
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
+from django.utils import timezone
+
+
+
+def logout_view(request):
+    logout(request)
+    return render_to_response('app1/index.html', {'logout' : 1})
+
+
+def my_view(request):
+    if request.method == "POST":
+        username = request.POST['uname']
+        password = request.POST['passwd']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                u = UserLoginTrackNewM()
+                u.user=user
+                u.save()
+                return HttpResponseRedirect('/app1/index/home/')
+                # Redirect to a success page.
+            else:
+                cxt = {'disable_error' : 1 }
+                return render_to_response('app1/disabledaccount.html', cxt)
+                # Return a 'disabled account' error message
+        else:
+            return render_to_response('app1/index.html', {'wrongpass' : 1})
+            # Return an 'invalid login' error message.
+ 
+
+def user_profile(request):
+    return render_to_response('app1/index.html')
+
+
+def index(request):
+    return render_to_response('app1/index.html')
+
+
+def user_prof(request):
+    usrname = request.POST.get('username')
+    pas = request.POST.get('pass')
+    cpas = request.POST.get('cpass')
+    fnm = request.POST.get('fname')
+    lnm = request.POST.get('lname')
+    age = request.POST.get('age')
+    stf = request.POST.get('staff')
+    mob = request.POST.get('mobno')
+    prefer = request.POST.getlist('prefrences')
+    prefer = map(int, prefer)
+         
+    if stf == "True":
+        staff_status = 1
+        stf_stat = True
+    if stf == "False":
+        staff_status = 2
+        stf_stat = False
+    
+    if cpas != pas:
+        allpref = Pref.objects.all()
+        cxt = {
+         'usr' : usrname , 'f_nm' : fnm , 'l_nm' : lnm , 'age_' : age , 'stf_' : staff_status , 'mob_no' : mob ,  
+         'pr' : allpref , 'prefer_' : prefer ,
+         'passerror': 1
+           }
+        return render_to_response('app1/signup.html', cxt)
+    
+    newUser = UserProf()
+    
+    user = User()
+    user.username = usrname
+    user.first_name = fnm
+    user.last_name = lnm
+    #user.password = pas
+    user.set_password(pas)
+    user.is_staff = stf_stat
+    user.save()
+    newUser.user = user
+    newUser.age = age
+    newUser.mobile_no = mob
+    newUser.save()
+    newUser.prefrences.add(*prefer) 
+    cxt = {  'pass_error': 1
+           }
+    return render_to_response('app1/index.html', cxt)
+    
+    
+    
+def detail(request, storyId):
+    storytag = StoryTagTrackNewM()
+    story_istance= Story.objects.get(id=storyId)
+    storytag.storyid = story_istance
+    story_tag_list = story_istance.prefrence.all()
+    storytag.save()
+    new_tag_list = []
+    for i in story_tag_list:
+        new_tag_list.append(i.id)
+    storytag.tagid.add(*new_tag_list)
+    user_story_track = UserStoryTrackNewM()
+    user_story_track.user = request.user
+    user_story_track.storyid = Story.objects.get(id=storyId)
+    
+    user_story_track.save()
+    s = Story.objects.get(id = storyId)
+    s.counter = s.counter + 1
+    s.save()
+    
+    story_tag_track = StoryTagTrackNewM()
+    story_tag_track.storyid = Story.objects.get(id=storyId)
+    taglist = story_tag_track.storyid.prefrence.all()
+    
+    story = get_object_or_404(Story, id=storyId)
+    cxt = {
+        'story': story
+    }
+    return render_to_response('app1/detail.html', cxt)
+    s = Story.objects.get(id = storyId)
+    
+
+def home(request):
+        q_all = Story.objects.all()
+        q_sorted = q_all.order_by('-pub_date')
+        q2 = q_sorted.filter(is_top_news = "True")
+        items = q2.order_by('-pub_date')[:5]
+           
+        j = UserProf.objects.get(user__username__exact=request.user)
+        p = j.prefrences.all()
+        c = 0
+        prelist = list(p)
+        alist = []
+        for t in q_sorted:
+            if c < 5:
+                storylst = t.prefrence.all()
+                storylist = list(storylst)
+                any_in = any(i in storylist for i in prelist)
+                if any_in:
+                    c = c + 1
+                    alist.append(t)
+            u = UserProf.objects.get(user__username__exact=request.user)
+    
+        prefr = u.prefrences.all()
+        ppr = list(prefr)    
+        story_stories = Story.objects.order_by('-counter')[:5]
+        
+        cxt = {'tagg' : ppr, 'tgs' : alist, 'stories_list' : story_stories,
+        'stories': items}
+        return render_to_response('app1/home.html', cxt)
+        
+
+def analytics(request):
+    staff_status = request.user.is_staff
+    if staff_status == True:
+        return render_to_response('app1/analytics.html')
+    else:
+        cxt = {'staff_error' : 1 }
+        return render_to_response('app1/disabledaccount.html', cxt)
+            
+
+def tagusage(request):
+    import datetime
+    
+    s_day = timezone.now() + datetime.timedelta(days=1)
+    e_day = timezone.now() - datetime.timedelta(days=1)
+    from datetime import datetime
+    current_date = datetime.strftime(s_day, '%Y-%m-%d')
+    last_date = datetime.strftime(e_day, '%Y-%m-%d')
+    if request.method == "POST":
+        sday = request.POST.get('sday')
+        eday = request.POST.get('eday')
+        sday_ = datetime.strptime(sday, '%Y-%m-%d')
+        eday_ = datetime.strptime(eday, '%Y-%m-%d')
+        
+        story_tag = StoryTagTrackNewM.objects.filter(tagtime__gte = sday_).filter(tagtime__lte = eday_).values('tagid__name').annotate(count=Count('storyid')).order_by('-count')
+               
+        cxt = {'st_tag' : story_tag , 'start_date' : last_date , 'end_date' : current_date}
+        return render_to_response('app1/tagusage.html', cxt)
+    else:
+        cxt = {'start_date' : last_date , 'end_date' : current_date }
+        return render_to_response('app1/tagusage.html', cxt)
+    
+    
+def useractivity(request):
+    import datetime
+    
+    s_day = timezone.now() + datetime.timedelta(days=1)
+    e_day = timezone.now() - datetime.timedelta(days=0)
+    from datetime import datetime
+    current_date = datetime.strftime(s_day, '%Y-%m-%d')
+    last_date = datetime.strftime(e_day, '%Y-%m-%d')
+    from datetime import date
+    if request.method == "POST":
+        sday = request.POST.get('sday')
+        eday = request.POST.get('eday')
+        sday_ = datetime.strptime(sday, '%Y-%m-%d')
+        eday_ = datetime.strptime(eday, '%Y-%m-%d')
+                
+        user_log = UserLoginTrackNewM.objects.filter(usertime__gte = sday_).filter(usertime__lte = eday_).values('user','user__username').annotate(count=Count('user')).order_by('-count')         
+                
+        userstory = UserStoryTrackNewM.objects.filter(storytime__gte = sday).filter(storytime__lte = eday).values('user','user__username').annotate(count=Count('user')).order_by('user')
+        
+        temp={}
+        for i in user_log:
+            temp[i['user']]={'logincount':i['count'], 'username':i['user__username'], 'storycount':0 }
+        for j in userstory:
+            if j['user'] in temp:
+                temp[j['user']]['storycount'] = j['count']
+        cxt = {'temp_': temp, 'start_date' : last_date , 'end_date' : current_date }
+        return render_to_response('app1/useractivity.html', cxt)
+    else:
+        cxt = {'start_date' : last_date , 'end_date' : current_date }
+        return render_to_response('app1/useractivity.html', cxt)
+    
+
+def signup(request):
+    allpref = Pref.objects.all()
+    return render_to_response('app1/signup.html', {'pr' : allpref})
+

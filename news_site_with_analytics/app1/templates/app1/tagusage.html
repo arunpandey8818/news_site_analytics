@@ -1,0 +1,79 @@
+<html> 
+<title>Home Page</title>
+<style>
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 20px;
+   
+}
+
+#header {
+    background-color:black;
+    color:white;
+    text-align:center;
+    padding:5px;
+}
+
+#footer {
+    
+    clear:both;
+    text-align:center;
+    padding:55px; 
+    float:center;
+}
+</style>
+<body bgcolor="A2B6B4">
+  <h2><center>Welcome To Tag Usage Page</center></h2>
+<div id="header">
+<table style="width:100%">
+  <tr>  
+    <td></td><td></td>
+    <form action="/app1/index/home/analytics/tagusage/"method="POST">
+            
+      <td><label style="color: white;font-size:20px">Start Date: <input type="date" name="sday" value="{{start_date}}"></label></td>
+      
+      <td><label style="color: white;font-size:20px">End Date: <input type="date" name="eday" value="{{end_date}}"></label></td>
+ </tr>
+    <tr>
+    <td></td><td><a href="/app1/index/home/analytics/"><label style="color: yellow; ">Menu</label></a></td>
+    <td></td><td><label align="center"><input type="submit" value="submit"></label></td>
+    <td><a href="/app1/index/signup/home/logout/"><label style="color: yellow; ">Sign Out</label></a></td>
+    </tr>
+    </form>
+    </table>
+</div><br>
+
+
+
+<div id="footer">
+<form action="" method="post">
+<table style="width:70%">
+    <tr>
+    <th>Stories Count</th>
+    <th>Stories Tag</th>
+  </tr>
+  
+  {% if st_tag %}
+   {% for st in st_tag %}
+   <tr>
+   {% for k in st.items %}
+
+    <td>{{k.1}}</td>
+    
+  {% endfor %}
+  </tr>
+  {% endfor %}
+  {% endif %} 
+</table>
+</form>
+
+</div>
+
+</body>
+</html>
+
+

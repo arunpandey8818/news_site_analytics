@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <title>signup page</title>
+<style>
+td {
+      padding: 5px;
+}
+</style>
+
+</head>
+
+<body bgcolor="A2B6B4"><h2><CENTER>Create an Account<CENTER></h2>
+
+<form action="/app1/index/user_prof/" method="post">
+  {% csrf_token %}
+  <fieldset><legend><h3>Details:</h3></legend><br>
+  
+  {% if passerror %} <h2><p style="color:purple">ERROR:- Password Do Not Match</p></h2> {% endif %}
+   
+  <table style=" font-size:20px; color: red;width:50%">
+    <tr>
+      <td>Username : </td>
+      {% if usr %} <td><input type="text" name="username" value={{usr}}></td>
+      {% else %}<td><input type="text" name="username" value=""></td>
+      {% endif %}
+    </tr>
+    
+    <tr>
+      <td>Password : </td>
+      <td><input type="password" name="pass" value=""></td>	
+    </tr>
+    
+    <tr>
+      <td>Confirm Password :</td>
+      <td><input type="password" name="cpass" value=""></td>		
+    </tr>
+    
+    <tr>
+      <td>First Name : </td>
+      {% if f_nm %}<td><input type="text" name="fname" value={{f_nm}}></td>
+      {% else %}<td><input type="text" name="fname" value=""></td>
+      {% endif %}
+    </tr>
+    
+    <tr>
+      <td>Last Name : </td>
+      {% if l_nm %}<td><input type="text" name="lname" value={{l_nm}}></td>
+      {% else %}<td><input type="text" name="lname" value=""></td>
+      {% endif %}
+    </tr>
+    
+    <tr>  
+      <td>Age : </td>
+      {% if age_ %}<td> <input type="number" size="6" name="age" min="8" max="99" value={{age_}}> </td>
+      {% else %}<td> <input type="number" size="6" name="age" min="8" max="99" value="21"> </td>
+      {% endif %}
+    </tr>
+    
+    <tr>  
+      <td>Mobile No. : </td>
+      {% if mob_no %}<td><input type="number" name="mobno" value={{mob_no}}></td>
+      {% else %}<td><input type="number" name="mobno" value=""></td>
+      {% endif %}
+    </tr>
+    
+    <tr>
+      <td>Staff :</td>
+      {% if stf_ %}
+        
+        {% if stf_ == 1 %}
+          <td><label style="color:green">YES <input type="radio" value="True" name="staff" checked="checked">NO <input type="radio" value="False" name="staff"></label></td>
+        {% elif stf_ == 2 %}
+          <td><label style="color:green">YES <input type="radio" value="True" name="staff">NO <input type="radio" value="False" name="staff" checked="checked"></label></td>
+        {% endif %}
+          
+      {% else %}
+        <td><label style="color:green">YES <input type="radio" value="True" name="staff">NO <input type="radio" value="False" name="staff"></label></td>
+      {% endif %}
+    </tr>
+ 
+     
+
+    
+      
+    <tr>
+      <td>Choose Prefrences : </td>
+      {% if prefer_ %}
+      <td> {% for pre in pr %}
+             {% if pre.id in prefer_ %} 
+               <label style="color:green">{{pre.name}}<input type="checkbox" value="{{pre.id}}" name="prefrences" checked></label>
+             {% else %}
+             <label style="color:green">{{pre.name}}<input type="checkbox" value="{{pre.id}}" name="prefrences" ></label>
+           {% endif %}{% endfor %}  
+      </td>
+      
+      {% else %}
+      
+      <td> {% for pre in pr %}<label style="color:green">{{pre.name}}<input type="checkbox" value="{{pre.id}}" name="prefrences"></label>
+           {% endfor %}  
+      </td>
+      
+      {% endif %}
+    </tr>
+  </table>
+      
+  <center><p stype="font-size:20px"><input type="submit" value="Register"><center></p>
+  </fieldset>
+</form>
+  
+</body>
+</html>
+

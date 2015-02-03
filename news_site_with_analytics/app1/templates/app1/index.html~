@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>signIn</title>
+  <style>
+td {
+      padding: 8px;
+}
+</style>
+</head>
+
+<body bgcolor="A2B6B4"><h1><CENTER>Welcome To Login Page <CENTER></h1>
+  <form action="/app1/index/my_view/" method="post">
+  <fieldset><legend><h2>Login</h2></legend><br>
+  
+  <table style=" font-size:20px; color: red;width:50%">
+{% if wrongpass %} <label style="color:Green"><h3> Username and Password combination is wrong !!! </h3></label>{% endif %}
+
+{% if pass_error %} <label style="color:Green"><center><h3> Welcome New User.. Login To Enter</h3></center></label>{% endif %}
+
+{% if logout %} <label style="color:Green"><h3><center> LogOut Successfully </center></h3></label>{% endif %}    
+   <tr>  
+    <td>Username:</td>
+    <td><input type="text" name="uname" value=""></td>
+   </tr>
+   <tr>
+    <td>Password:</td>
+    <td><input type="password" name="passwd" value=""></td>     
+   </tr> 
+   <tr><td></td><td><input type="submit" value="Sign In"></td></tr>
+    
+  </table>
+   </fieldset>
+   </form>
+   <p style="font-size:20px">Not a member? <a href="/app1/index/signup/">Sign up now</a></p>
+  </body>
+</html>
+
+
+
+
+
+
+

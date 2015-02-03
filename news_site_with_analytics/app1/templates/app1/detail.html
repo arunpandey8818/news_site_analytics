@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>Detail Page</title>
+<style>
+td {
+      padding: 10px;
+}
+</style>
+
+</head>
+<body bgcolor="A2B6B4">
+
+  <h2><center>Welcome To Detail Page</center></h2>
+ 
+  <form action="" method="post" id="newsitem_form">
+  
+<fieldset><legend><h2>News items:</h2></legend>
+  <table style=" font-size:20px; color: red;width:50%">
+    
+    <tr>  
+    <td>Title:</td>
+    <td><textarea name="title" cols="40">{{story.title}}</textarea></td>
+    </tr>
+    <tr>
+    <td>Body:</td>
+    <td><textarea name="message" rows="20" cols="80">{{story.body}}</textarea></td>     
+    </tr>
+    <tr><td>Publication Date:</td>
+    <td><input type="text" name="uname" value="{{story.pub_date}}"></td>   
+    </tr>
+    <tr><td>Preferences:</td>{% for tag in story.prefrence.all %}
+    <td><input type="text" name="uname" value="{{tag.name}}"></td><tr><td></td>{% endfor %}</tr>
+    </tr> 
+      
+  </table>
+</fieldset><br>
+
+</form> 
+</body>
+</html>
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
