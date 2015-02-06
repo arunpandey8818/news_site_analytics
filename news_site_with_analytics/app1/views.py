@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
+
 def logout_view(request):
     logout(request)
     return render_to_response('app1/index.html', {'logout' : 1})
@@ -22,6 +23,8 @@ def my_view(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
+                request.session["username"] = user
+                
                 u = UserLoginTrack()
                 u.user=user
                 u.save()
@@ -42,6 +45,7 @@ def user_profile(request):
 
 def index(request):
     return render_to_response('app1/index.html')
+
 
 @login_required(login_url='/app1/index/')
 def user_prof(request):
@@ -122,6 +126,7 @@ def detail(request, storyId):
     }
     return render_to_response('app1/detail.html', cxt)
     s = Story.objects.get(id = storyId)
+
     
 @login_required(login_url='/app1/index/')
 def home(request):
@@ -129,7 +134,7 @@ def home(request):
         sorted_story = all_story.order_by('-pub_date')
         top_story = sorted_story.filter(is_top_news = "True")
         items = top_story.order_by('-pub_date')[:5]
-           
+        print request.session["username"]   
         logged_user = UserProfile.objects.get(user__username__exact=request.user)
         logged_pref = logged_user.prefrences.all()
         c = 0
@@ -150,8 +155,9 @@ def home(request):
         story_stories = Story.objects.order_by('-counter')[:5]
         
         cxt = {'tagg' : ppr, 'tgs' : alist, 'stories_list' : story_stories, 'stories': items }
-        return render_to_response('app1/home.html', cxt)
-        
+        return render_to_response('app1/home.html', cxt, context_instance=RequestContext(request))
+         
+         
 @login_required(login_url='/app1/index/')
 def analytics(request):
     staff_status = request.user.is_staff
@@ -159,6 +165,8 @@ def analytics(request):
         return render_to_response('app1/analytics.html')
     else:
         return HttpResponseRedirect('/app1/index/home/')
+         
+
             
 @login_required(login_url='/app1/index/')
 def tagusage(request):
@@ -174,8 +182,7 @@ def tagusage(request):
         eday = request.POST.get('eday')
         sday_ = datetime.strptime(sday, '%Y-%m-%d')
         eday_ = datetime.strptime(eday, '%Y-%m-%d')
-        print timezone
-        print 44566
+        
         story_tag = StoryTagTrack.objects.filter(tagtime__gte = sday_).filter(tagtime__lte = eday_).values('tagid__name').annotate(count=Count('storyid')).order_by('-count')
                
         cxt = {'storytag' : story_tag , 'start_date' : last_date , 'end_date' : current_date}
@@ -183,6 +190,7 @@ def tagusage(request):
     else:
         cxt = {'start_date' : last_date , 'end_date' : current_date }
         return render_to_response('app1/tagusage.html', cxt)
+
     
 @login_required(login_url='/app1/index/')    
 def useractivity(request):
@@ -212,10 +220,10 @@ def useractivity(request):
                 temp[j['user']]['storycount'] = j['count']
         cxt = {'temp_': temp, 'start_date' : last_date , 'end_date' : current_date }
         
-        return render_to_response('app1/useractivity.html', cxt)
+        return render_to_response('app1/useractivity.html', cxt, context_instance=RequestContext(request))
     else:
         cxt = {'start_date' : last_date , 'end_date' : current_date }
-        return render_to_response('app1/useractivity.html', cxt)
+        return render_to_response('app1/useractivity.html', cxt, context_instance=RequestContext(request))
     
 
 def signup(request):
