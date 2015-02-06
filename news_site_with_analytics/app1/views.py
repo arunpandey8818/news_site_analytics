@@ -8,8 +8,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
 
-
-
 def logout_view(request):
     logout(request)
     return render_to_response('app1/index.html', {'logout' : 1})
@@ -23,7 +21,7 @@ def my_view(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                u = UserLoginTrackNewM()
+                u = UserLoginTrack()
                 u.user=user
                 u.save()
                 return HttpResponseRedirect('/app1/index/home/')
@@ -65,15 +63,15 @@ def user_prof(request):
         stf_stat = False
     
     if cpas != pas:
-        allpref = Pref.objects.all()
+        alltag = Tag.objects.all()
         cxt = {
          'usr' : usrname , 'f_nm' : fnm , 'l_nm' : lnm , 'age_' : age , 'stf_' : staff_status , 'mob_no' : mob ,  
-         'pr' : allpref , 'prefer_' : prefer ,
+         'tags' : alltag , 'prefer_' : prefer ,
          'passerror': 1
            }
         return render_to_response('app1/signup.html', cxt)
     
-    newUser = UserProf()
+    newUser = UserProfile()
     
     user = User()
     user.username = usrname
@@ -95,7 +93,7 @@ def user_prof(request):
     
     
 def detail(request, storyId):
-    storytag = StoryTagTrackNewM()
+    storytag = StoryTagTrack()
     story_istance= Story.objects.get(id=storyId)
     storytag.storyid = story_istance
     story_tag_list = story_istance.prefrence.all()
@@ -104,7 +102,7 @@ def detail(request, storyId):
     for i in story_tag_list:
         new_tag_list.append(i.id)
     storytag.tagid.add(*new_tag_list)
-    user_story_track = UserStoryTrackNewM()
+    user_story_track = UserStoryTrack()
     user_story_track.user = request.user
     user_story_track.storyid = Story.objects.get(id=storyId)
     
@@ -113,7 +111,7 @@ def detail(request, storyId):
     s.counter = s.counter + 1
     s.save()
     
-    story_tag_track = StoryTagTrackNewM()
+    story_tag_track = StoryTagTrack()
     story_tag_track.storyid = Story.objects.get(id=storyId)
     taglist = story_tag_track.storyid.prefrence.all()
     
@@ -126,32 +124,31 @@ def detail(request, storyId):
     
 
 def home(request):
-        q_all = Story.objects.all()
-        q_sorted = q_all.order_by('-pub_date')
-        q2 = q_sorted.filter(is_top_news = "True")
-        items = q2.order_by('-pub_date')[:5]
+        all_story = Story.objects.all()
+        sorted_story = all_story.order_by('-pub_date')
+        top_story = sorted_story.filter(is_top_news = "True")
+        items = top_story.order_by('-pub_date')[:5]
            
-        j = UserProf.objects.get(user__username__exact=request.user)
-        p = j.prefrences.all()
+        logged_user = UserProfile.objects.get(user__username__exact=request.user)
+        logged_pref = logged_user.prefrences.all()
         c = 0
-        prelist = list(p)
+        prelist = list(logged_pref)
         alist = []
-        for t in q_sorted:
+        for temp in sorted_story:
             if c < 5:
-                storylst = t.prefrence.all()
+                storylst = temp.prefrence.all()
                 storylist = list(storylst)
                 any_in = any(i in storylist for i in prelist)
                 if any_in:
                     c = c + 1
-                    alist.append(t)
-            u = UserProf.objects.get(user__username__exact=request.user)
+                    alist.append(temp)
+            usr = UserProfile.objects.get(user__username__exact=request.user)
     
-        prefr = u.prefrences.all()
+        prefr = usr.prefrences.all()
         ppr = list(prefr)    
         story_stories = Story.objects.order_by('-counter')[:5]
         
-        cxt = {'tagg' : ppr, 'tgs' : alist, 'stories_list' : story_stories,
-        'stories': items}
+        cxt = {'tagg' : ppr, 'tgs' : alist, 'stories_list' : story_stories, 'stories': items }
         return render_to_response('app1/home.html', cxt)
         
 
@@ -160,27 +157,27 @@ def analytics(request):
     if staff_status == True:
         return render_to_response('app1/analytics.html')
     else:
-        cxt = {'staff_error' : 1 }
-        return render_to_response('app1/disabledaccount.html', cxt)
+        return HttpResponseRedirect('/app1/index/home/')
             
 
 def tagusage(request):
     import datetime
     
-    s_day = timezone.now() + datetime.timedelta(days=1)
-    e_day = timezone.now() - datetime.timedelta(days=1)
+    e_day = datetime.datetime.now()
+    s_day = datetime.datetime.now() - datetime.timedelta(days=1)
     from datetime import datetime
-    current_date = datetime.strftime(s_day, '%Y-%m-%d')
-    last_date = datetime.strftime(e_day, '%Y-%m-%d')
+    current_date = datetime.strftime(e_day, '%Y-%m-%d')
+    last_date = datetime.strftime(s_day, '%Y-%m-%d')
     if request.method == "POST":
         sday = request.POST.get('sday')
         eday = request.POST.get('eday')
         sday_ = datetime.strptime(sday, '%Y-%m-%d')
         eday_ = datetime.strptime(eday, '%Y-%m-%d')
-        
-        story_tag = StoryTagTrackNewM.objects.filter(tagtime__gte = sday_).filter(tagtime__lte = eday_).values('tagid__name').annotate(count=Count('storyid')).order_by('-count')
+        print timezone
+        print 44566
+        story_tag = StoryTagTrack.objects.filter(tagtime__gte = sday_).filter(tagtime__lte = eday_).values('tagid__name').annotate(count=Count('storyid')).order_by('-count')
                
-        cxt = {'st_tag' : story_tag , 'start_date' : last_date , 'end_date' : current_date}
+        cxt = {'storytag' : story_tag , 'start_date' : last_date , 'end_date' : current_date}
         return render_to_response('app1/tagusage.html', cxt)
     else:
         cxt = {'start_date' : last_date , 'end_date' : current_date }
@@ -190,11 +187,11 @@ def tagusage(request):
 def useractivity(request):
     import datetime
     
-    s_day = timezone.now() + datetime.timedelta(days=1)
-    e_day = timezone.now() - datetime.timedelta(days=0)
+    e_day = datetime.datetime.now()
+    s_day = datetime.datetime.now() - datetime.timedelta(days=1)
     from datetime import datetime
-    current_date = datetime.strftime(s_day, '%Y-%m-%d')
-    last_date = datetime.strftime(e_day, '%Y-%m-%d')
+    current_date = datetime.strftime(e_day, '%Y-%m-%d')
+    last_date = datetime.strftime(s_day, '%Y-%m-%d')
     from datetime import date
     if request.method == "POST":
         sday = request.POST.get('sday')
@@ -202,9 +199,9 @@ def useractivity(request):
         sday_ = datetime.strptime(sday, '%Y-%m-%d')
         eday_ = datetime.strptime(eday, '%Y-%m-%d')
                 
-        user_log = UserLoginTrackNewM.objects.filter(usertime__gte = sday_).filter(usertime__lte = eday_).values('user','user__username').annotate(count=Count('user')).order_by('-count')         
+        user_log = UserLoginTrack.objects.filter(usertime__gte = sday_).filter(usertime__lte = eday_).values('user','user__username').annotate(count=Count('user')).order_by('-count')         
                 
-        userstory = UserStoryTrackNewM.objects.filter(storytime__gte = sday).filter(storytime__lte = eday).values('user','user__username').annotate(count=Count('user')).order_by('user')
+        userstory = UserStoryTrack.objects.filter(storytime__gte = sday_).filter(storytime__lte = eday_).values('user','user__username').annotate(count=Count('user')).order_by('user')
         
         temp={}
         for i in user_log:
@@ -213,6 +210,7 @@ def useractivity(request):
             if j['user'] in temp:
                 temp[j['user']]['storycount'] = j['count']
         cxt = {'temp_': temp, 'start_date' : last_date , 'end_date' : current_date }
+        
         return render_to_response('app1/useractivity.html', cxt)
     else:
         cxt = {'start_date' : last_date , 'end_date' : current_date }
@@ -220,6 +218,6 @@ def useractivity(request):
     
 
 def signup(request):
-    allpref = Pref.objects.all()
-    return render_to_response('app1/signup.html', {'pr' : allpref})
+    alltag = Tag.objects.all()
+    return render_to_response('app1/signup.html', {'tags' : alltag})
 
