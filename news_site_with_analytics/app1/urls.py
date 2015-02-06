@@ -10,7 +10,7 @@ urlpatterns = patterns('app1.views',
     url(r'^index/home/$', 'home'),
    
     url(r'^index/user_prof/$', 'user_prof'),
-    url(r'^index/user_profile/$', 'user_profile'),
+    #url(r'^index/user_profile/$', 'user_profile'),
 
     url(r'^index/my_view/$', 'my_view'),
     url(r'^index/logout/$', 'logout_view'),
