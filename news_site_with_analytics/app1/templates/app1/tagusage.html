@@ -41,7 +41,7 @@ th, td {
     <tr>
     <td></td><td><a href="/app1/index/home/analytics/"><label style="color: yellow; ">Menu</label></a></td>
     <td></td><td><label align="center"><input type="submit" value="submit"></label></td>
-    <td><a href="/app1/index/signup/home/logout/"><label style="color: yellow; ">Sign Out</label></a></td>
+    <td><a href="/app1/index/logout/"><label style="color: yellow; ">Sign Out</label></a></td>
     </tr>
     </form>
     </table>
@@ -57,10 +57,10 @@ th, td {
     <th>Stories Tag</th>
   </tr>
   
-  {% if st_tag %}
-   {% for st in st_tag %}
+  {% if storytag %}
+   {% for story in storytag %}
    <tr>
-   {% for k in st.items %}
+   {% for k in story.items %}
 
     <td>{{k.1}}</td>
     

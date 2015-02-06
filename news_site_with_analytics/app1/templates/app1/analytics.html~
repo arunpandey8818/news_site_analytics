@@ -20,8 +20,10 @@ li {
     
     <li><input type="button" value="See Tag Usage" onClick="window.location='/app1/index/home/analytics/tagusage/';"/></strong></li>
    <br>
-    <li><strong><input type="button" value="See Activities" onClick="window.location='/app1/index/signup/home/analytics/useractivity/';"/></strong></li><br><br>  <br>   
-  
+    <li><input type="button" value="See User Activities" onClick="window.location='/app1/index/signup/home/analytics/useractivity/';"/></li><br><br><br>   
+   
+   <td></td><td><a href="/app1/index/home/"><label style="color: Blue; ">Back To Home</label></a></td>
+   
   </ul>
      </table>
    </fieldset>

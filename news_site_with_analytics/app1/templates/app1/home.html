@@ -33,18 +33,18 @@ td,tr,li {
 </style>
 <body bgcolor="A2B6B4">
   <h2><center>Welcome To Home Page</center></h2>
+  <label style="color:Green"><h2><center> {% if disable_error %} Error: Your Account is Disabled !!! {% endif %}{% if staff_error %} Error: You Are Not A Member of Staff !!! {% endif %}</center></h2></label>
 
 <div id="header">
 <table style="width:100%">
-    <tr>  <td></td><td></td>
+  <tr>  <td></td><td></td>
     
     <td><label style="color: white;font-size:20px">For Staff Use: <button onClick="window.location='/app1/index/home/analytics/';" value="" />Analytics</label></td><td></td><td></td>
-    <td><label style="font-size:20px"><button onClick="window.location='/app1/index/signup/home/logout/';" value=""/> signout</label></td>
+    <td><label style="font-size:20px"><button onClick="window.location='/app1/index/logout/';" value=""/> signout</label></td>
    
-   </tr>
-   </table>
+  </tr>
+  </table>
 </div><br>
-
 
 <div id="nav">
 <form action="" method="post">
@@ -78,20 +78,17 @@ td,tr,li {
 <form action="" method="post">
   <fieldset><legend><h2>Suggested Stories :</h2></legend><br>
   <table>
-        <ol>
+    <ol>
     
     {% if tgs %}
       {% for tg in tgs %}
       <li><a href="/app1/index/home/{{tg.id}}/">{{tg}}</a> </li>
         {% endfor %}
         {% endif %}
-         
-     
     </ol>
   </table>
   </fieldset>
   </form>
-
 </div>
 
 </body>

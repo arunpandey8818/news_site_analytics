@@ -11,7 +11,7 @@ td {
 
 <body bgcolor="A2B6B4"><h1><CENTER> !!! Sorry !!!<CENTER></h1>
   <form action="/app1/index/my_view/" method="post">
-  <fieldset><legend><h2>Disabled Account</h2></legend><br>
+  <fieldset><legend><h2>Account Error</h2></legend><br>
   
   <table style=" font-size:20px; color: red;width:50%">
 <label style="color:Green"><h2><center> {% if disable_error %} Error: Your Account is Disabled !!! {% endif %}{% if staff_error %} Error: You Are Not A Member of Staff !!! {% endif %}</center></h2></label>   

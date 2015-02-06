@@ -57,6 +57,7 @@ th, td {
     </tr>
  
   {% if temp_ %}
+  
    {% for t, l in temp_.items %} 
     <tr>
      <td>{{l.username}} </td>
@@ -65,7 +66,7 @@ th, td {
    </tr>
    
   {% endfor %}
-  {% endif %} 
+  {% endif %}
   
   </table>
 </form>
@@ -76,75 +77,7 @@ th, td {
 </html>
 
 
-<!--
 
-
-
-<style>
-td,tr,li {
-      padding: 5px;
-}
-
-#nav {
-    line-height:30px;
-    height:320px;
-    width:48%;
-    float:left;
-    padding:5px; 
-}
-#section {
-    line-height:30px;
-    height:320px;
-    width:48.5%;
-    float:right;
-    padding:5px;
-}
-
-</style>
-<body bgcolor="A2B6B4">
-  
-<div id="nav">
-<form action="" method="post">
-  <fieldset><legend><h2>User Login Info :</h2></legend><br>
-  <table style="width:100%">
-   <tr>
-    <th>Login Count</th>
-    <th>Username</th>
-    
-  </tr>
- 
-  {% if user_login %}
-   {% for st in user_login %}
-   <tr>
-   {% for k in st.items %}
-
-    <td>{{k.1}} </td>
-    
-  {% endfor %}
-  </tr>
-  {% endfor %}
-  {% endif %}
-  </table>
-  </fieldset>
-</form>
-</div>
-<!--
-<div id="section">
-<form action="" method="post">
-  <fieldset><legend><h2>User Stories Info :</h2></legend><br>
-  <table>
-    <ol>
-     {% for story in stories %}
-        <li><a href="/app1/index/home/{{story.id}}/">{{story.title}}</a> - {% for tag in story.prefrence.all %}<span>{{tag.name}}</span>{% if not forloop.last %}, {% endif %} {% endfor %}</li>
-     {% endfor %}
-    </ol>
-  </table>
-  </fieldset>
-</form>
-</div>
-
-
--->
 </bod>
 </html>
 

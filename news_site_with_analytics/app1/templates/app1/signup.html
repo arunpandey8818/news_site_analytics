@@ -87,17 +87,17 @@ td {
     <tr>
       <td>Choose Prefrences : </td>
       {% if prefer_ %}
-      <td> {% for pre in pr %}
-             {% if pre.id in prefer_ %} 
-               <label style="color:green">{{pre.name}}<input type="checkbox" value="{{pre.id}}" name="prefrences" checked></label>
+      <td> {% for tag in tags %}
+             {% if tag.id in prefer_ %} 
+               <label style="color:green">{{tag.name}}<input type="checkbox" value="{{tag.id}}" name="prefrences" checked></label>
              {% else %}
-             <label style="color:green">{{pre.name}}<input type="checkbox" value="{{pre.id}}" name="prefrences" ></label>
+             <label style="color:green">{{tag.name}}<input type="checkbox" value="{{tag.id}}" name="prefrences" ></label>
            {% endif %}{% endfor %}  
       </td>
       
       {% else %}
       
-      <td> {% for pre in pr %}<label style="color:green">{{pre.name}}<input type="checkbox" value="{{pre.id}}" name="prefrences"></label>
+      <td> {% for tag in tags %}<label style="color:green">{{tag.name}}<input type="checkbox" value="{{tag.id}}" name="prefrences"></label>
            {% endfor %}  
       </td>
       

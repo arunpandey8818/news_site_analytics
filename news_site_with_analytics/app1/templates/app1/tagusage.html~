@@ -54,13 +54,13 @@ th, td {
 <table style="width:70%">
     <tr>
     <th>Stories Count</th>
-    <th>Stories Tags</th>
+    <th>Stories Tag</th>
   </tr>
   
-  {% if st_tag %}
-   {% for st in st_tag %}
+  {% if storytag %}
+   {% for story in storytag %}
    <tr>
-   {% for k in st.items %}
+   {% for k in story.items %}
 
     <td>{{k.1}}</td>
     

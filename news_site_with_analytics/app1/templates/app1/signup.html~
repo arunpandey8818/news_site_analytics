@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>signup page</title>
 
+  <title>signup page</title>
 <style>
 td {
       padding: 5px;
@@ -17,7 +17,7 @@ td {
   {% csrf_token %}
   <fieldset><legend><h3>Details:</h3></legend><br>
   
- {% if passerror %} <h2><p style="color:purple">ERROR:- Password Do Not Match</p></h2> {% endif %}
+  {% if passerror %} <h2><p style="color:purple">ERROR:- Password Do Not Match</p></h2> {% endif %}
    
   <table style=" font-size:20px; color: red;width:50%">
     <tr>
@@ -97,7 +97,7 @@ td {
       
       {% else %}
       
-      <td> {% for pre in pr %}<label style="color:green">{{pre.name}}<input type="checkbox" value="{{pre.id}}" name="prefrences"></label>
+      <td> {% for tag in tags %}<label style="color:green">{{tag.name}}<input type="checkbox" value="{{tag.id}}" name="prefrences"></label>
            {% endfor %}  
       </td>
       

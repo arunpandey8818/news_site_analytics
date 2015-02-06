@@ -1,0 +1,11 @@
+{% if temp_ %}
+  {{ value|dictsort:"storycount" }}
+   {% for t, l in temp_.items %} 
+    <tr>
+     <td>{{l.username}} </td>
+     <td>{{l.storycount}}</td>
+     <td>{{l.logincount}}</td>
+   </tr>
+   
+  {% endfor %}
+  {% endif %}
